@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La House Gaming | LHG — Structure Warzone Officielle</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<canvas id="pc"></canvas>
+<div id="toast"></div>
+
+<!-- ANNONCE BAR -->
+<div id="ann"><button class="ann-close" onclick="closeAnn()">✕</button><span id="ann-txt"></span></div>
+
+<!-- ════════════ ADMIN LOGIN (Alt+S) ════════════ -->
+<div id="adm-ov">
+  <div id="adm-box">
+    <button class="ac" onclick="closeLogin()">✕</button>
+    <div class="at">⚙ ADMIN ACCESS</div>
+    <div class="as">// ACCÈS RESTREINT · LHG STAFF ONLY</div>
+    <div class="afg"><label class="afl">Identifiant</label><input type="text" id="au" class="afi" placeholder="Username" autocomplete="off"></div>
+    <div class="afg"><label class="afl">Mot de passe</label><input type="password" id="apw" class="afi" placeholder="••••••••" autocomplete="off"></div>
+    <div id="adm-err">⚠ Identifiants incorrects</div>
+    <button class="abtn" onclick="doLogin()">CONNEXION →</button>
+  </div>
+</div>
+
+<!-- ════════════ ADMIN PANEL ════════════ -->
+<div id="adm-panel">
+  <div class="apnav">
+    <div class="apbrand"><img src="images/logo.png" alt="LHG"><span class="apbrand-t">LHG ADMIN</span><span class="ap-badge">PANEL v2.0</span></div>
+    <button class="aplogt" onclick="logoutAdmin()">⏻ DÉCONNEXION</button>
+  </div>
+  <div class="ap-body">
+    <div class="ap-top">
+      <div class="ap-top-t">TABLEAU DE BORD</div>
+      <div class="ap-dt" id="ap-dt"></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="ap-tabs">
+      <button class="ap-tab active" onclick="switchTab('overview')">📊 | Vue d'ensemble</button>
+      <button class="ap-tab" onclick="switchTab('candidatures')">📋 | Candidatures</button>
+      <button class="ap-tab" onclick="switchTab('content')">✏️ | Contenu</button>
+      <button class="ap-tab" onclick="switchTab('design')">🎨 | Design</button>
+      <button class="ap-tab" onclick="switchTab('reseaux')">🔗 | Réseaux</button>
+      <button class="ap-tab" onclick="switchTab('settings')">⚙️ | Paramètres</button>
+    </div>
+
+    <!-- TAB: Overview -->
+    <div class="ap-tab-content active" id="tab-overview">
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="apgrid">
+        <div class="apc cc"><div class="apc-ico">📋 |</div><div class="apc-t">CANDIDATURES</div><div class="apc-d">Voir et gérer les candidatures reçues.</div><button class="apbtn c" onclick="switchTab('candidatures')">OUVRIR</button></div>
+        <div class="apc cg"><div class="apc-ico">📢 |</div><div class="apc-t">ANNONCE RAPIDE</div><div class="apc-d">Publier un message en haut du site.</div><button class="apbtn g" onclick="openM('annonce')">PUBLIER</button></div>
+        <div class="apc cv"><div class="apc-ico">👀  |</div><div class="apc-t">APERÇU SITE</div><div class="apc-d">Fermer le panel et voir le site public.</div><button class="apbtn v" onclick="closePanel()">VOIR LE SITE</button></div>
+        <div class="apc cg"><div class="apc-ico">📥 |</div><div class="apc-t">EXPORTER CANDIDATURES</div><div class="apc-d">Télécharger toutes les candidatures en JSON.</div><button class="apbtn g" onclick="exportCands()">EXPORTER</button></div>
+      </div>
+    </div>
+
+    <!-- TAB: Candidatures -->
+    <div class="ap-tab-content" id="tab-candidatures">
+      <div class="ap-st">CANDIDATURES REÇUES <span class="ap-cb" id="c-badge">0</span></div>
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+        <button class="apbtn c" onclick="filterCands('all')">Toutes</button>
+        <button class="apbtn c" onclick="filterCands('new')">🆕 | Nouvelles</button>
+        <button class="apbtn c" onclick="filterCands('ok')">✅ | Acceptées</button>
+        <button class="apbtn c" onclick="filterCands('ko')">❌ | Refusées</button>
+        <button class="apbtn g" onclick="exportCands()">💾 | Exporter JSON</button>
+        <button class="apbtn r" onclick="openM('delallcands')">🗑 | Tout supprimer</button>
+      </div>
+      <div id="c-wrap"></div>
+    </div>
+
+    <!-- TAB: Contenu -->
+    <div class="ap-tab-content" id="tab-content">
+      <div class="apgrid">
+        <div class="apc cv"><div class="apc-ico">✍️ |</div><div class="apc-t">TEXTE D'ACCUEIL</div><div class="apc-d">Modifier la description principale du site.</div><button class="apbtn v" onclick="openM('desc')">MODIFIER</button></div>
+        <div class="apc cc"><div class="apc-ico">👥 |</div><div class="apc-t">AJOUTER JOUEUR</div><div class="apc-d">Ajouter un joueur au roster officiel.</div><button class="apbtn c" onclick="openM('roster')">AJOUTER</button></div>
+        <div class="apc cg"><div class="apc-ico">🏆 |</div><div class="apc-t">AJOUTER RÉSULTAT</div><div class="apc-d">Nouveau résultat dans le palmarès.</div><button class="apbtn g" onclick="openM('palmares')">AJOUTER</button></div>
+        <div class="apc cv"><div class="apc-ico">📢 |</div><div class="apc-t">BANDEAU ANNONCE</div><div class="apc-d">Message visible en haut de toutes les pages.</div><button class="apbtn v" onclick="openM('annonce')">GÉRER</button></div>
+        <div class="apc cc"><div class="apc-ico">📊 |</div><div class="apc-t">STATS HERO</div><div class="apc-d">Modifier les 3 chiffres clés affichés en accueil.</div><button class="apbtn c" onclick="openM('herostats')">MODIFIER</button></div>
+        <div class="apc cg"><div class="apc-ico">🎮 |</div><div class="apc-t">CRITÈRES RECRUTEMENT</div><div class="apc-d">Changer le K/D minimum et les critères affichés.</div><button class="apbtn g" onclick="openM('recrit')">MODIFIER</button></div>
+        <div class="apc cv"><div class="apc-ico">📱 |</div><div class="apc-t">LIEN TIKTOK</div><div class="apc-d">Mettre à jour l'URL du compte TikTok.</div><button class="apbtn v" onclick="openM('tiktok')">MODIFIER</button></div>
+        <div class="apc cc"><div class="apc-ico">🗓️ |</div><div class="apc-t">PROCHAIN TOURNOI</div><div class="apc-d">Afficher un compte à rebours sur le site.</div><button class="apbtn c" onclick="openM('countdown')">CONFIGURER</button></div>
+      </div>
+    </div>
+
+    <!-- TAB: Design -->
+    <div class="ap-tab-content" id="tab-design">
+      <div class="apgrid">
+        <div class="apc cv"><div class="apc-ico">🎨 |</div><div class="apc-t">COULEUR PRINCIPALE</div><div class="apc-d">Changer la couleur cyan du site en temps réel.</div><button class="apbtn v" onclick="openM('color1')">CHANGER</button></div>
+        <div class="apc cg"><div class="apc-ico">💜 |</div><div class="apc-t">COULEUR VIOLET</div><div class="apc-d">Modifier la couleur violet/accent secondaire.</div><button class="apbtn g" onclick="openM('color2')">CHANGER</button></div>
+        <div class="apc cc"><div class="apc-ico">✨ |</div><div class="apc-t">INTENSITÉ PARTICULES</div><div class="apc-d">Régler le nombre de particules en arrière-plan.</div><button class="apbtn c" onclick="openM('particles')">RÉGLER</button></div>
+        <div class="apc cv"><div class="apc-ico">🖼️ |</div><div class="apc-t">TITRE DU SITE</div><div class="apc-d">Modifier le titre affiché dans l'onglet du navigateur.</div><button class="apbtn v" onclick="openM('title')">MODIFIER</button></div>
+        <div class="apc cg"><div class="apc-ico">🌑 |</div><div class="apc-t">MODE SOMBRE/CLAIR</div><div class="apc-d">Basculer entre différents thèmes de fond.</div><button class="apbtn g" onclick="openM('theme')">CHANGER</button></div>
+        <div class="apc cc"><div class="apc-ico">🔠 |</div><div class="apc-t">SLOGAN HERO</div><div class="apc-d">Modifier le texte "WARZONE · ESPORT · FRANCE".</div><button class="apbtn c" onclick="openM('slogan')">MODIFIER</button></div>
+      </div>
+    </div>
+
+    <!-- TAB: Réseaux -->
+    <div class="ap-tab-content" id="tab-reseaux">
+      <div class="apgrid">
+        <div class="apc cv"><div class="apc-ico">🔗 |</div><div class="apc-t">LIENS SOCIAUX</div><div class="apc-d">Discord, Instagram, Email de contact.</div><button class="apbtn v" onclick="openM('socials')">MODIFIER</button></div>
+        <div class="apc cc"><div class="apc-ico">🎵 |</div><div class="apc-t">TIKTOK</div><div class="apc-d">URL et description de la bannière TikTok.</div><button class="apbtn c" onclick="openM('tiktok')">MODIFIER</button></div>
+        <div class="apc cg"><div class="apc-ico">🐦 |</div><div class="apc-t">TWITTER / X</div><div class="apc-d">Lien vers le compte Twitter/X de la structure.</div><button class="apbtn g" onclick="openM('twitter')">MODIFIER</button></div>
+        <div class="apc cv"><div class="apc-ico">📺 |</div><div class="apc-t">TWITCH / YOUTUBE</div><div class="apc-d">Lien vers le stream ou la chaîne YouTube.</div><button class="apbtn v" onclick="openM('stream')">MODIFIER</button></div>
+      </div>
+    </div>
+
+    <!-- TAB: Paramètres -->
+    <div class="ap-tab-content" id="tab-settings">
+      <div class="apgrid">
+        <div class="apc cg"><div class="apc-ico">🔒 | </div><div class="apc-t">MOT DE PASSE ADMIN</div><div class="apc-d">Modifier les identifiants de connexion.</div><button class="apbtn g" onclick="openM('pass')">MODIFIER</button></div>
+        <div class="apc cc"><div class="apc-ico">💾 |</div><div class="apc-t">SAUVEGARDER CONFIG</div><div class="apc-d">Exporter toute la configuration du site en JSON.</div><button class="apbtn c" onclick="exportConfig()">EXPORTER</button></div>
+        <div class="apc cv"><div class="apc-ico">📂 |</div><div class="apc-t">IMPORTER CONFIG</div><div class="apc-d">Restaurer une configuration depuis un fichier JSON.</div><button class="apbtn v" onclick="openM('import')">IMPORTER</button></div>
+        <div class="apc cr"><div class="apc-ico">🗑️ |</div><div class="apc-t">RÉINITIALISER</div><div class="apc-d">Remettre tout à zéro (irréversible).</div><button class="apbtn r" onclick="openM('reset')">RESET</button></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUB MODAL -->
+<div id="ap-mod">
+  <div class="apmbox">
+    <button class="apmc" onclick="closeM()">✕</button>
+    <div class="apmt" id="apm-t">—</div>
+    <div id="apm-b"></div>
+  </div>
+</div>
+
+<!-- ════════════ SITE PUBLIC ════════════ -->
+<nav id="main-nav">
+  <a href="#hero" class="nav-brand">
+    <img src="images/logo.png" alt="LHG" class="nav-logo-img">
+    <span class="nav-wm">LHG</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#roster">Roster</a></li>
+    <li><a href="#palmares">Palmarès</a></li>
+    <li><a href="#recrutement">Rejoindre</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+    <li><div id="adm-badge" onclick="togglePanel()">⚙ ADMIN</div></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="h-banner"><img src="images/banniere.png" alt="LHG bannière"></div>
+  <div class="h-bg"></div><div class="h-grid"></div><div class="h-scan"></div>
+  <div class="h-inner max">
+    <div>
+      <div class="h-eyebrow"><span class="dot"></span><span id="hero-slogan">WARZONE · ESPORT · FRANCE</span></div>
+      <h1 class="h-h1"><span class="h1a">LA</span><span class="h1b">HOUSE</span><span class="h1c">GAMING</span></h1>
+      <p class="h-sub" id="hero-desc">Structure compétitive française spécialisée Warzone. Nous regroupons les meilleurs talents pour dominer la scène esport nationale et internationale.</p>
+      <div class="h-btns">
+        <a href="#roster" class="btn-p">Notre Roster</a>
+        <a href="#recrutement" class="btn-g">Nous rejoindre</a>
+      </div>
+      <!-- TIKTOK BANNER -->
+      <div class="tt-wrap">
+        <a id="tt-link" href="https://www.tiktok.com/@lahousegaming" target="_blank" rel="noopener" class="tt-ban">
+          <div class="tt-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg></div>
+          <div class="tt-info">
+            <div class="tt-live">DERNIÈRE VIDÉO</div>
+            <div class="tt-name" id="tt-name">@lahousegaming</div>
+            <div class="tt-desc" id="tt-desc">Clips · Highlights · Behind the scenes</div>
+          </div>
+          <div class="tt-ph"></div>
+          <div class="tt-arr">→</div>
+        </a>
+      </div>
+      <div class="h-stats" id="hero-stats-el">
+        <div class="hst"><div class="hst-n" id="hs1n">12+</div><div class="hst-l" id="hs1l">Joueurs</div></div>
+        <div class="hst"><div class="hst-n" id="hs2n">2026</div><div class="hst-l" id="hs2l">Fondation</div></div>
+        <div class="hst"><div class="hst-n" id="hs3n">TOP</div><div class="hst-l" id="hs3l">France</div></div>
+      </div>
+      <!-- COUNTDOWN (hidden by default) -->
+      <div id="countdown-wrap" style="display:none;margin-top:24px;padding:16px 20px;background:rgba(13,10,26,.9);border:1px solid rgba(245,158,11,.3);max-width:480px;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--go);margin-bottom:10px" id="cd-label">⏱ PROCHAIN TOURNOI</div>
+        <div style="display:flex;gap:20px" id="cd-display">
+          <div style="text-align:center"><div style="font-family:'Orbitron',monospace;font-size:24px;font-weight:900;color:var(--go)" id="cd-d">00</div><div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dm)">JOURS</div></div>
+          <div style="text-align:center"><div style="font-family:'Orbitron',monospace;font-size:24px;font-weight:900;color:var(--cy)" id="cd-h">00</div><div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dm)">HEURES</div></div>
+          <div style="text-align:center"><div style="font-family:'Orbitron',monospace;font-size:24px;font-weight:900;color:var(--vb)" id="cd-m">00</div><div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dm)">MIN</div></div>
+          <div style="text-align:center"><div style="font-family:'Orbitron',monospace;font-size:24px;font-weight:900;color:var(--wh)" id="cd-s">00</div><div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dm)">SEC</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="h-right">
+      <div class="logo-stage">
+        <div class="lr"></div><div class="lr"></div><div class="lr"></div>
+        <div class="lr-dots" id="rdots"></div>
+        <div class="logo-wrap"><img src="images/logo.png" alt="La House Gaming"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<section id="roster"><div class="max">
+  <div class="sh"><div class="stag">Roster Officiel</div><h2 class="stit">Nos <span>Joueurs</span></h2><div class="sline"></div></div>
+  <div class="rgrid" id="roster-grid">
+    <div class="pc"><div class="pc-flag">🇫🇷</div><div class="pc-hex">IGL</div><div class="pc-role"></div><div class="pc-name">LHG Berloque</div><div class="pc-real"></div><div class="pc-kd"><span class="kl"></span><span class="kv"></span></div></div>
+    <div class="pc"><div class="pc-flag">🇫🇷</div><div class="pc-hex">FR</div><div class="pc-role"></div><div class="pc-name">LHG Flynners</div><div class="pc-real"></div><div class="pc-kd"><span class="kl"></span><span class="kv"></span></div></div>
+    <div class="pc"><div class="pc-flag">🇫🇷</div><div class="pc-hex">SP</div><div class="pc-role"></div><div class="pc-name">LHG Eryo</div><div class="pc-real"></div><div class="pc-kd"><span class="kl"></span><span class="kv"></span></div></div>
+    <div class="pc"><div class="pc-flag">🇫🇷</div><div class="pc-hex">SN</div><div class="pc-role"></div><div class="pc-name">LHG Avada</div><div class="pc-real"></div><div class="pc-kd"><span class="kl"></span><span class="kv"></span></div></div>
+    <div class="pc"><div class="pc-flag">🇫🇷</div><div class="pc-hex">SN</div><div class="pc-role"></div><div class="pc-name">LHG Se7en</div><div class="pc-real"></div><div class="pc-kd"><span class="kl"></span><span class="kv"></span></div></div>
+    <div class="pc"><div class="pc-flag">🇫🇷</div><div class="pc-hex">SN</div><div class="pc-role"></div><div class="pc-name">LHG Klaarq</div><div class="pc-real"></div><div class="pc-kd"><span class="kl"></span><span class="kv"></span></div></div>
+    <div class="pc" style="opacity:.4;border-style:dashed"><div class="pc-flag">❓</div><div class="pc-hex" style="color:var(--dm)">?</div><div class="pc-role">Poste ouvert</div><div class="pc-name" style="color:var(--dm)">RECRUTEMENT</div><div class="pc-real">Candidature ouverte</div><div class="pc-kd"><span class="kl">K/D</span><span class="kv" style="color:var(--dm)">???</span></div></div>
+  </div>
+</div></section>
+<div class="divider"></div>
+
+<section id="palmares"><div class="max">
+  <div class="sh"><div class="stag">Résultats</div><h2 class="stit"><span>Palmarès</span></h2><div class="sline"></div></div>
+  <div class="plist" id="palm-list">
+  </div>
+</div></section>
+<div class="divider"></div>
+
+<section id="recrutement"><div class="max">
+  <div class="sh"><div class="stag">Rejoindre LHG</div><h2 class="stit">Nous <span>Rejoindre</span></h2><div class="sline"></div></div>
+  <div class="rgd">
+    <div class="ri">
+      <p>La House Gaming recherche en permanence des joueurs motivés, réguliers et compétitifs. Si tu as le niveau et l'état d'esprit, ta place est ici.</p>
+      <p>LHG c'est une famille avant tout — on valorise l'esprit d'équipe autant que la performance.</p>
+      <div class="rl">
+        <div class="rr"><div class="ric">🎮 |</div><div class="rt"><strong id="req1-t">K/D minimum 2.0</strong><span id="req1-d">Niveau compétitif requis sur Warzone</span></div></div>
+        <div class="rr"><div class="ric">🎙️ |</div><div class="rt"><strong id="req2-t">Communication active</strong><span id="req2-d">Discord obligatoire, micro requis en match</span></div></div>
+        <div class="rr"><div class="ric">📅 |</div><div class="rt"><strong id="req3-t">Disponibilité régulière</strong><span id="req3-d">3 sessions minimum par semaine</span></div></div>
+        <div class="rr"><div class="ric">🧠 |</div><div class="rt"><strong id="req4-t">Mentalité compétitive</strong><span id="req4-d">Envie de progresser, pas d'ego toxique</span></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="rf" id="cand-form">
+        <div class="fg"><label class="fl">Pseudo Warzone</label><input type="text" class="fi" id="cf-p" placeholder="Ton pseudo en jeu"></div>
+        <div class="fg"><label class="fl">Discord</label><input type="text" class="fi" id="cf-d" placeholder="pseudo#0000"></div>
+        <div class="fg"><label class="fl">Âge</label><input type="text" class="fi" id="cf-a" placeholder="ex: 19"></div>
+        <div class="fg"><label class="fl">Rôle préféré</label><select class="fs" id="cf-r"><option value="">Sélectionne ton rôle</option><option>IGL / Capitaine</option><option>Fragger</option><option>Support</option><option>Sniper</option><option>Flex</option></select></div>
+        <div class="fg"><label class="fl">K/D ratio</label><input type="text" class="fi" id="cf-k" placeholder="ex: 2.45"></div>
+        <div class="fg"><label class="fl">Heures de jeu / semaine</label><input type="text" class="fi" id="cf-h" placeholder="ex: 20h"></div>
+        <div class="fg"><label class="fl">Présente-toi</label><textarea class="fta" id="cf-b" placeholder="Ton expérience, tes disponibilités, pourquoi LHG..."></textarea></div>
+        <button class="fsub" onclick="submitCand()">Envoyer ma candidature →</button>
+      </div>
+      <div id="cs"><div class="csi">✅ |</div><p>CANDIDATURE ENVOYÉE !<br>On reviendra vers toi sur Discord sous 48h.</p></div>
+    </div>
+  </div>
+</div></section>
+<div class="divider"></div>
+
+<section id="contact"><div class="cwrap max">
+  <div class="sh" style="text-align:center;display:flex;flex-direction:column;align-items:center">
+    <div class="stag">Nous contacter</div><h2 class="stit"><span>Contact</span></h2><div class="sline" style="margin:18px auto 0"></div>
+  </div>
+  <div class="clogo"><img src="images/logo.png" alt="LHG"></div>
+  <div class="ccards">
+    <div class="cc"><div class="cc-ico">💬</div><div class="cc-type">Discord</div><div class="cc-val"><a href="#" id="lk-d">discord.gg/lahousegaming</a></div></div>
+    <div class="cc"><div class="cc-ico">📸</div><div class="cc-type">Instagram</div><div class="cc-val"><a href="#" id="lk-i">@lahousegaming</a></div></div>
+    <div class="cc"><div class="cc-ico">✉️</div><div class="cc-type">Email</div><div class="cc-val"><a href="#" id="lk-e">lahousegaming@gmail.com</a></div></div>
+  </div>
+</div></section>
+
+<footer>
+  <div class="fb"><img src="images/logo.png" alt="LHG"><span class="fb-n">LA HOUSE GAMING</span></div>
+  <div class="fc">© 2026 LA HOUSE GAMING · ALL RIGHTS RESERVED · LHG ESPORT</div>
+  <div class="fso"><a class="sb" href="#" id="lk-tw">𝕏</a><a class="sb" href="#" id="lk-ig">📸</a><a class="sb" href="#" id="lk-yt">▶</a><a class="sb" href="#" id="lk-tk">♪</a></div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
